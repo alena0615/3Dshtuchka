@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Сборка
+        run: dotnet build Image3D.csproj -c Release
+
+      - name: Тесты
+        run: dotnet test Image3D.Tests -c Release
+
+      - name: Проверка оформления
+        run: |
+          dotnet format Image3D.csproj --verify-no-changes
+          dotnet format Image3D.Core/Image3D.Core.csproj --verify-no-changes

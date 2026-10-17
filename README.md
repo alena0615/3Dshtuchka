@@ -1,5 +1,7 @@
 # FdF — каркасная 3D-модель карты высот
 
+[![CI](https://github.com/alena0615/3Dshtuchka/actions/workflows/ci.yml/badge.svg)](https://github.com/alena0615/3Dshtuchka/actions/workflows/ci.yml)
+
 ![скриншот](docs/screenshot.png)
 
 ## Описание
@@ -28,11 +30,13 @@ X = x' · scale + offset_x,   Y = y' · scale + offset_y
 
 ## Установка и запуск
 
-Нужны Windows и [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0). Других зависимостей нет: пакеты для тестов (xUnit) скачиваются автоматически.
+Проще всего скачать готовый `pepe3D.exe` на странице [Releases](https://github.com/alena0615/3Dshtuchka/releases) и запустить. Устанавливать .NET не нужно. Там же лежит `maps.zip` с тестовыми картами.
+
+Запуск из исходников: нужны Windows и [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0). Других зависимостей нет: пакеты для тестов (xUnit) скачиваются автоматически.
 
 ```
-git clone https://github.com/<логин>/<репозиторий>.git
-cd <репозиторий>
+git clone https://github.com/alena0615/3Dshtuchka.git
+cd 3Dshtuchka
 dotnet run
 ```
 
@@ -100,6 +104,14 @@ dotnet format Image3D.Core/Image3D.Core.csproj --verify-no-changes
 Тесты проверяют разбор `maps/elem.fdf`, каждую ошибку формата из `maps/bad/`, разбор значений (`7`, `-3`, `2,0xFF8800`, `1,0xff`), изометрическую проекцию и подгонку под окно, модель карты и интерполяцию цвета.
 
 Проекты собираются с `Nullable` и `TreatWarningsAsErrors`, поэтому любое предупреждение компилятора — ошибка сборки (аналог строгой проверки типов). `dotnet format` проверяет оформление кода.
+
+## CI/CD
+
+Настроено через GitHub Actions (папка `.github/workflows/`):
+
+- `ci.yml` — при каждом push и pull request собирает проект, запускает тесты и проверяет оформление (`dotnet format`). Результат виден на вкладке Actions и на значке CI вверху.
+- `release.yml` — при push тега вида `v*` (например, `v1.0`) прогоняет тесты, собирает один файл `pepe3D.exe` (со встроенным .NET, для Windows x64) и выкладывает его вместе с `maps.zip` в Releases.
+
 
 # Лицензия
 

@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Тесты
+        run: dotnet test Image3D.Tests -c Release
+
+      - name: Сборка exe
+        run: dotnet publish Image3D.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish
+
+      - name: Упаковка
+        run: |
+          Rename-Item publish/Image3D.exe pepe3D.exe
+          Compress-Archive -Path maps -DestinationPath maps.zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            publish/pepe3D.exe
+            maps.zip
+          generate_release_notes: true
